@@ -28,7 +28,7 @@ public class FilmeDAO {
 	
 	public void apagar(Filme filme) {
 		manager.getTransaction().begin();
-		manager.remove(filme);
+		manager.remove(manager.merge(filme));
 		manager.getTransaction().commit();
 	}
 	

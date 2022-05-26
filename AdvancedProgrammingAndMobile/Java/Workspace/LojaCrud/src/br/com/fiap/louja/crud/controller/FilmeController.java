@@ -36,6 +36,7 @@ public class FilmeController {
 	public void salvarFilme(String titulo, String sinopse, String genero, String ondeAssistiu, boolean assistido, int avaliacao) {
 		Filme f = new Filme();
 		f.setTitulo(titulo);
+		f.setSinopse(sinopse);
 		f.setAssistido(assistido);
 		f.setGenero(genero);
 		f.setOndeAssistir(ondeAssistiu);

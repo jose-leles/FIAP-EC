@@ -42,7 +42,7 @@ public class PainelListagem extends JPanel {
 		btnApagar.setBounds(10, 300, 100, 30);
 		btnApagar.addActionListener((ActionEvent e)->{
 			String id = (String) tabela.getValueAt(tabela.getSelectedRow(), 0);
-			filmeController.apagarFilme(Long.valueOf(id));
+			filmeController.apagarFilme(Long.parseLong(id,10));
 		});
 		this.add(btnApagar);
 		atualizarDados();

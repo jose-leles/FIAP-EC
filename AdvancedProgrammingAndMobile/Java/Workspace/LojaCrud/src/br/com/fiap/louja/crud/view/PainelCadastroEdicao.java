@@ -214,7 +214,7 @@ public class PainelCadastroEdicao extends JPanel {
 			}
 			filmeController.salvarFilme(
 					txtTitulo.getText(),
-					txtSinopse.getText(),
+					txtSinopse.getText().trim(),
 					(String)cbGenero.getSelectedItem(),
 					jRadioGenero1.isSelected() ? jRadioGenero1.getText()
 							: jRadioGenero2.isSelected() ? jRadioGenero2.getText()

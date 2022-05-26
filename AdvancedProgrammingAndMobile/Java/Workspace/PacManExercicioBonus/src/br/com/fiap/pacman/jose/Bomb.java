@@ -1,10 +1,22 @@
 package br.com.fiap.pacman.jose;
 
-public class Bomb extends Item {
+import javax.swing.ImageIcon;
 
-	public Bomb(int x, int y) {
-		super(x, y);
-		// TODO Auto-generated constructor stub
+public class Bomb extends Item {
+	
+	boolean exploded;
+
+	public Bomb(int x, int y, ImageIcon background) {
+		super(x, y, background);
+	}
+	
+	public void setExploded(boolean exploded) {
+		setVisible(!exploded);
+		this.exploded = exploded;
+	}
+	
+	public boolean isExploded() {
+		return exploded;
 	}
 
 }

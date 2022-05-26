@@ -1,13 +1,18 @@
 package br.com.fiap.pacman.jose;
 
+import java.time.Instant;
+
+import javax.swing.ImageIcon;
+
 public class Player extends GameObject {
 
 	private int life;
 	private int direction;
 	private boolean invensible;
+	private long invensibleStartTimestamp;
 	
-	public Player(int x, int y, int direction) {
-		super(x, y);
+	public Player(int x, int y, int direction, ImageIcon background) {
+		super(x, y, background);
 		this.direction = direction;
 	}
 	
@@ -53,6 +58,17 @@ public class Player extends GameObject {
 
 	public boolean isInvensible() { return invensible; }
 
-	public void setInvensible(boolean invensible) { this.invensible = invensible; }
+	public void setInvensible(boolean invensible) { 
+		this.invensible = invensible; 
+        setInvensibleStartTimestamp(invensible? Instant.now().getEpochSecond() : 0);
+	}
+
+	public long getInvensibleStartTimestamp() {
+		return invensibleStartTimestamp;
+	}
+
+	public void setInvensibleStartTimestamp(long invensibleStartTimestamp) {
+		this.invensibleStartTimestamp = invensibleStartTimestamp;
+	}
 
 }

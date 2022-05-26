@@ -1,11 +1,13 @@
 package br.com.fiap.pacman.jose;
 
+import javax.swing.ImageIcon;
+
 public class Ghost extends GameObject {
 
 	private int direction;
 	
-	public Ghost(int x, int y, int direction) {
-		super(x, y);
+	public Ghost(int x, int y, int direction, ImageIcon background) {
+		super(x, y, background);
 		this.direction = direction;
 	}
 	

@@ -4,6 +4,8 @@ import java.awt.Image;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.geom.Rectangle2D;
+import java.security.Timestamp;
+import java.time.Instant;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -15,24 +17,17 @@ import org.w3c.dom.css.Rect;
 public class Game extends JFrame implements KeyListener {
 
 	private static final long serialVersionUID = 1L;
-	private Player player = new Player(50, 50, 180);
-	private Ghost ghost1 = new Ghost(0,0,0);
-	private Ghost ghost2 = new Ghost(500,0,0);
-	private Ghost ghost3 = new Ghost(0,500,0);
-	private Ghost ghost4 = new Ghost(500,500,0);
-	private Bomb bomb = new Bomb(100,100);
-	private Booster booster = new Booster(400, 400);
+	private Player player = new Player(50, 50, 180, new ImageIcon("src/images/pacman.png"));
+	private Ghost ghost1 = new Ghost(0,0,0, new ImageIcon("src/images/ghost.png"));
+	private Ghost ghost2 = new Ghost(500,0,0, new ImageIcon("src/images/ghost.png"));
+	private Ghost ghost3 = new Ghost(0,500,0, new ImageIcon("src/images/ghost.png"));
+	private Ghost ghost4 = new Ghost(500,500,0, new ImageIcon("src/images/ghost.png"));
+	private Bomb bomb = new Bomb(100,100, new ImageIcon("src/images/bomb.png"));
+	private Booster booster = new Booster(400, 400, new ImageIcon("src/images/booster.png"));
 
-	private JLabel imgPlayer = new JLabel(new ImageIcon("src/images/pacman.png"));
-	private JLabel imgGhost1 = new JLabel(new ImageIcon("src/images/ghost.png"));
-	private JLabel imgGhost2 = new JLabel(new ImageIcon("src/images/ghost.png"));
-	private JLabel imgGhost3 = new JLabel(new ImageIcon("src/images/ghost.png"));
-	private JLabel imgGhost4 = new JLabel(new ImageIcon("src/images/ghost.png"));
-	private JLabel imgBomb = new JLabel(new ImageIcon("src/images/bomb.png"));
-	private JLabel imgBooster = new JLabel(new ImageIcon("src/images/booster.png"));
 
 	private final int SCREENSIZE = 600;
-	private int speed = 50;
+	private int speed = 1;
 	
 	public static void main(String[] args) {
 		new Game().init();
@@ -48,13 +43,14 @@ public class Game extends JFrame implements KeyListener {
 		ghost3.setScreenSize(SCREENSIZE);
 		ghost4.setScreenSize(SCREENSIZE);
 		
-		add(imgPlayer);
-		add(imgGhost1);
-		add(imgGhost2);
-		add(imgGhost3);
-		add(imgGhost4);
-		add(imgBomb);
-		add(imgBooster);
+		
+		add(player);
+		add(ghost1);
+		add(ghost2);
+		add(ghost3);
+		add(ghost4);
+		add(bomb);
+		add(booster);
 
 		render();
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -67,28 +63,32 @@ public class Game extends JFrame implements KeyListener {
 
 	private void render() {
 		
-		updateLocation(imgPlayer, player);
-		updateLocation(imgGhost1, ghost1);
-		updateLocation(imgGhost2, ghost2);
-		updateLocation(imgGhost3, ghost3);
-		updateLocation(imgGhost4, ghost4);
-		updateLocation(imgBomb, bomb);
-		updateLocation(imgBooster, booster);
+		updateLocation(player);
+		updateLocation(ghost1);
+		updateLocation(ghost2);
+		updateLocation(ghost3);
+		updateLocation(ghost4);
+		updateLocation(bomb);
+		updateLocation(booster);
 		setTitle("Life: " + player.getLife());
 		SwingUtilities.updateComponentTreeUI(this);
 
 	}
 
-	private void updateLocation(JLabel label, GameObject object) {
-		label.setBounds(object.getX(), object.getY(), 50, 50);
-		ImageIcon myImage = (ImageIcon) label.getIcon();
+	private void updateLocation(GameObject object) {
+		object.setBounds(object.getX(), object.getY(), 50, 50);
+		ImageIcon myImage = (ImageIcon) object.getIcon();
         Image img = myImage.getImage();
-        Image newImg = img.getScaledInstance(label.getWidth(), label.getHeight(),Image.SCALE_SMOOTH);
-        label.setIcon( new ImageIcon(newImg) );
+        Image newImg = img.getScaledInstance(object.getWidth(), object.getHeight(),Image.SCALE_SMOOTH);
+        object.setIcon( new ImageIcon(newImg) );
 	}
 
 	private void run() {
 		while (player.getLife() > 0) {
+			//player sempre fica 5 segundos invencivel
+			if(player.isInvensible() && (Instant.now().getEpochSecond() - player.getInvensibleStartTimestamp()) > 5) {
+				player.setInvensible(false);
+			}
 			
 			player.move();
 			ghost1.move();
@@ -96,8 +96,23 @@ public class Game extends JFrame implements KeyListener {
 			ghost3.move();
 			ghost4.move();
 			
-//			if(.intersect(imgPlayer, imgBomb, imgPlayer))
-
+			if (player.isCollidedWith(bomb) && !bomb.isExploded()) {
+                bomb.setExploded(true);
+                player.setLife(player.getLife() - 1);
+            }
+            if (player.isCollidedWith(booster)) {
+            	player.setInvensible(true);
+                booster.setInvisible(true);
+            }
+            if (
+            		player.isCollidedWith(ghost1) 
+            		|| player.isCollidedWith(ghost2)
+            		|| player.isCollidedWith(ghost3)
+            		|| player.isCollidedWith(ghost4)
+            	) {
+                player.setLife(player.getLife() - 1);
+            }
+				
 			try {
 				Thread.sleep(speed);
 			} catch (InterruptedException e) {
